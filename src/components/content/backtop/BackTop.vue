@@ -1,29 +1,20 @@
 <template>
-  <div class="back-top">
+  <div class="back-top" ref="backtop">
     <img src="../../../assets/img/common/top.png" alt="">
   </div>
 </template>
 
 <script>
-import BackTop from "components/content/backtop/BackTop"
+import BScroll from 'better-scroll'
 export default {
   data() {
     return {
-
+       scroll:null
     }
   },
-  mounted() {
-    this.scroll = new BackTop(this.$refs.scroll,
-    {
-      click:true
-    })
-    this.scroll.scrollTo(0,0)
-  },
-  methods:{
-    scrollTo(x,y,time=300) {
-      this.scroll.scrollTo(x,y,time)
-    }
+  mounted(){
   }
+
 }
 </script>
 

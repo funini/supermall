@@ -79,6 +79,8 @@
       })),
       this.scroll.on('pullingUp',(() => {
         console.log("上拉加载更多")
+
+        
       }))
     },
     activated: function () {

@@ -3,15 +3,17 @@
     <nav-bar class="nav-bar">
       <div slot="center">购物车</div>
     </nav-bar>
-    <scroll class="scroll" ref="scroll">
+    <scroll class="scroll" ref="scroll" :probe-type="3" @scroll="contentScroll">
       <home-swiper :banners="banners" />
       <recommend-view :recommends="recommends" />
       <feature-view />
-      <tab-control class="tab-control" :titles="['流行','新款','精选']" @tabClick="tabClick" />
+      <tab-control class="tab-control" 
+      :titles="['流行','新款','精选']"
+      @tabClick="tabClick" />
       <goods-list :goods="showlist" />
     </scroll>  
 
-    <back-top @click.native = "backClick"/> 
+    <back-top @click.native = "backClick" v-show="isShowBackTop"/> 
   </div>
 </template>
 
@@ -51,6 +53,7 @@ export default {
         sell: { page: 0, list: [] }
       },
       currenttab: 'pop',
+      isShowBackTop: false
     };
   },
   computed: {
@@ -86,9 +89,13 @@ export default {
     },
     backClick() {
       console.log("back top");
-      this.$refs.scroll.scroll.scrollTo(0,0,500)
-      // 调用组件中的scrollTo方法（但是现在就是不对）
-      // this.$refs.scroll.scrollTo(0,0)
+      // this.$refs.scroll.scroll.scrollTo(0,0,500)
+      // 调用组件中的scrollTo方法
+      this.$refs.scroll.scrollTo(0,0)
+    },
+
+    contentScroll(position) {
+      this.isShowBackTop = -position.y > 1000
     },
 
     /**
