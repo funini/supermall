@@ -1,24 +1,85 @@
 <template>
-  <div id="home">
-    分类
+  <div class="wrapper" ref="aaa">
+    <ul class="content">
+      <li>内容1</li>
+      <li>内容2</li>
+      <li>内容3</li>
+      <li>内容4</li>
+      <li>内容5</li>
+      <li>内容6</li>
+      <li>内容7</li>
+      <li>内容8</li>
+      <li>内容9</li>
+      <li>内容10</li>
+      <li>内容11</li>
+      <li>内容12</li>
+      <li>内容13</li>
+      <li>内容14</li>
+      <li>内容15</li>
+      <li>内容16</li>
+      <li>内容17</li>
+      <li>内容18</li>
+      <li>内容19</li>
+      <li>内容20</li>
+      <li>内容21</li>
+      <li>内容22</li>
+      <li>内容23</li>
+      <li>内容24</li>
+      <li>内容25</li>
+      <li>内容26</li>
+      <li>内容27</li>
+      <li>内容28</li>
+      <li>内容29</li>
+      <li>内容30</li>
+      <li>内容31</li>
+      <li>内容32</li>
+      <li>内容33</li>
+      <li>内容34</li>
+      <li>内容35</li>
+      <li>内容36</li>
+      <li>内容37</li>
+      <li>内容38</li>
+      <li>内容39</li>
+      <li>内容40</li>
+      <li>内容41</li>
+      <li>内容42</li>
+      <li>内容43</li>
+      <li>内容44</li>
+      <li>内容45</li>
+      <li>内容46</li>
+      <li>内容47</li>
+      <li>内容48</li>
+      <li>内容49</li>
+      <li>内容50</li>
+    </ul> 
   </div>
 </template>
 
 <script>
-
+  import BScroll from 'better-scroll'
   export default {
-		name: "Home",
-
+		name: "cat",
     data() {
 		  return {
-
+        scroll:null
       }
     },
     computed: {
-
     },
     created() {
-
+    },
+    mounted(){     
+      // console.log(this.$refs.aaa)
+      this.scroll = new BScroll(document.querySelector('.wrapper'),{
+       probeType:3,
+       pullUpLoad:true
+      }),
+      this.scroll.on('scroll',(position => {
+        console.log(position)
+      })),
+      this.scroll.on('pullingUp',(() => {
+        console.log("上拉加载更多")
+      }))
     },
     activated: function () {
 
@@ -36,35 +97,9 @@
 </script>
 
 <style scoped>
-  #home {
-    /*position: relative;*/
-    height: 100vh;
-  }
-
-  .nav-bar {
-    background-color: var(--color-tint);
-    font-weight: 700;
-    color: #fff;
-  }
-
-  .content {
-    position: absolute;
-    top: 44px;
-    bottom: 49px;
-    left: 0;
-    right: 0;
-  }
-
-  .fixed {
-    position: fixed;
-    top: 44px;
-    left: 0;
-    right: 0;
-  }
-
-  .back-top {
-    position: fixed;
-    right: 10px;
-    bottom: 60px;
-  }
+.wrapper{
+  height:300px;
+  background:red;
+  color:#000;
+}
 </style>

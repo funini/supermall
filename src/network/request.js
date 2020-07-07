@@ -4,15 +4,16 @@ import axios from 'axios'
 export function request(config) {
   // 1.创建instance实例
   const instance = axios.create({
-    baseURL:'http://123.207.32.32:8000',
+    // baseURL:'http://123.207.32.32:8000',
+    baseURL:'http://152.136.185.210:8000/api/n3',
     timeout:5000
   })
   // 2.拦截器
   // 2.1请求拦截
     // 对instance实例进行拦截
     instance.interceptors.request.use(
-      config => {
-        console.log(config);
+      config => {   
+        // console.log(config);
         
         //请求拦截的作用:
         // 1. 比如config中一些信息不符合服务器的要求,则可在实例中进行配置
@@ -27,11 +28,11 @@ export function request(config) {
   // 2.2响应拦截
     instance.interceptors.response.use(
       res => {
-        console.log(res);
+        // console.log(res);
         return res;
       },
       err =>{
-        console.log(err);
+        // console.log(err);
       }
     )
   
