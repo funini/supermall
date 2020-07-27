@@ -8,8 +8,7 @@
 import BScroll from 'better-scroll'
 export default {
   data() {
-    return {
-       scroll:null
+    return {      
     }
   },
   mounted(){

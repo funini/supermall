@@ -3,19 +3,45 @@
     <nav-bar class="nav-bar">
       <div slot="center">购物车</div>
     </nav-bar>
-    <scroll class="scroll" ref="scroll" :probe-type="3" @scroll="contentScroll">
-      <home-swiper :banners="banners" />
+    <tab-control class="tab-control" 
+                  :titles="['流行','新款','精选']"
+                  @tabClick="tabClick"
+                  ref="tabControl"
+                  v-show="isTabFixed"
+                   ></tab-control>
+    <scroll class="scroll" 
+            ref="scroll" 
+            :probe-type="3" 
+            @scroll="contentScroll"
+            :pull-up-load="true"
+            @pullingUp="loadMore"
+            >
+      <div>
+              <home-swiper :banners="banners" @swiperImgLoad="swiperImgLoad" />
       <recommend-view :recommends="recommends" />
       <feature-view />
       <tab-control class="tab-control" 
-      :titles="['流行','新款','精选']"
-      @tabClick="tabClick" />
+                  :titles="['流行','新款','精选']"
+                  @tabClick="tabClick"
+                  ref="tabControl"
+                   />
       <goods-list :goods="showlist" />
+      </div>
+
     </scroll>  
 
     <back-top @click.native = "backClick" v-show="isShowBackTop"/> 
   </div>
 </template>
+
+
+
+
+
+
+
+
+
 
 <script>
 import NavBar from "components/common/navbar/NavBar";
@@ -29,7 +55,8 @@ import RecommendView from "./childComps/RecommendView";
 import FeatureView from "./childComps/FeatureView";
 
 import { getHomeMultidata, getHomeGoods } from "network/home";
-
+// import {debounce} from "../../utils"
+// import {itemListenerMixin} from "../../common/mixin"
 export default {
   name: "Home",
   components: {
@@ -39,10 +66,10 @@ export default {
     RecommendView,
     FeatureView,
     GoodsList,
-    Scroll,
+    // Scroll,
     BackTop
   },
-
+  // mixins:[itemListenerMixin],
   data() {
     return {
       banners: [],
@@ -53,7 +80,9 @@ export default {
         sell: { page: 0, list: [] }
       },
       currenttab: 'pop',
-      isShowBackTop: false
+      isShowBackTop: false,
+      tabOffsetTop:0,
+      isTabFixed:false
     };
   },
   computed: {
@@ -63,10 +92,18 @@ export default {
   },
   created() {
     this.getHomeMultidata();
+
     this.getHomeGoods("pop");
     this.getHomeGoods("new");
     this.getHomeGoods("sell");
+
   },
+  mounted(){
+    //监听图片加载完成事件
+      // 防抖函数
+    
+  },
+
   activated: function() {},
   deactivated: function() {},
   updated() {},
@@ -74,6 +111,16 @@ export default {
     /**
      * 事件监听相关的方法
      */
+    //防抖函数
+    debounce(func, delay) {
+      let timer = null
+      return function (...args){
+        if(timer) clearTimeout(timer) 
+        timer = setTimeout(() => {
+          func.apply(this.args)
+        }, delay);
+      }
+    },
     tabClick(index) {
       switch (index) {
         case 0:
@@ -88,16 +135,26 @@ export default {
       }
     },
     backClick() {
-      console.log("back top");
+      // console.log("back top");
       // this.$refs.scroll.scroll.scrollTo(0,0,500)
       // 调用组件中的scrollTo方法
       this.$refs.scroll.scrollTo(0,0)
     },
-
     contentScroll(position) {
+      //backtop是否显示
       this.isShowBackTop = -position.y > 1000
+      //tabControl是否吸顶（是否有position:fixed）
+      this.this.tabOffsetTop = -position.y >  this.tabOffsetTop
+      
+    },
+    loadMore() {     
+      this.getHomeGoods(this.currenttab);
     },
 
+    swiperImgLoad() {      
+      this.tabOffsetTop = this.$refs.tabControl.$el.offsetTop;
+      console.log(this.offsetTop)
+    },
     /**
      * 网络请求相关的方法
      */
@@ -108,11 +165,12 @@ export default {
       });
     },
     getHomeGoods(type) {
-      let page = this.goods[type].page + 1;
-      getHomeGoods(type, page).then(res => {
-        console.log(res);
+      const page = this.goods[type].page + 1;
+      getHomeGoods(type, page).then(res => {  
         this.goods[type].list.push(...res.data.data.list);
-        this.page += 1;
+        this.goods[type].page += 1;
+        this.$refs.scroll.finishPullUp();
+        // this.$refs.scroll.scroll.refrech();
       });
     }
   }
@@ -126,40 +184,27 @@ export default {
   height:100vh
 }
 
-.nav-bar {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-
+.nav-bar { 
   background-color: var(--color-tint);
   font-weight: 700;
   color: #fff;
   box-shadow: 0 1px 1px rgba(100, 100, 100, 0.1);
-
+  z-index:9;
+}
+.tab-control { 
+  background: #fff;
   z-index: 9;
 }
-.tab-control {
-  position: sticky;
-  top: 44px;
-  background: #fff;
-  z-index: 999;
-}
 
-/* .content {
+.scroll {
     position: absolute;
     top: 44px;
     bottom: 49px;
     left: 0;
     right: 0;
-  } */
+  }
 
-/* .fixed {
-    position: fixed;
-    top: 44px;
-    left: 0;
-    right: 0;
-  } */
+
 
 /* .back-top {
     position: fixed;
@@ -167,10 +212,9 @@ export default {
     bottom: 60px;
   } */
 
-  .scroll{
-    height:calc(100% - 93px);
-    /* height: 100%; */
+  /* .scroll{
+    height:calc(100% - 93px);    
     overflow: hidden;
     margin-top:44px;
-  }
+  } */
 </style>
